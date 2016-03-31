@@ -10,15 +10,15 @@ func addClassToModel(model *Model, cursor clang.Cursor) error {
 
 	namespaceCursor := cursor.LexicalParent()
 	for namespaceCursor.Kind() == clang.Cursor_Namespace {
-		model.Namespaces = append(model.Namespaces, namespaceCursor.Spelling())
+		iface.Namespaces = append(iface.Namespaces, namespaceCursor.Spelling())
 		namespaceCursor = namespaceCursor.LexicalParent()
 	}
 
 	var reversedNamespaces []string
-	for i := len(model.Namespaces) - 1; i >= 0; i-- {
-		reversedNamespaces = append(reversedNamespaces, model.Namespaces[i])
+	for i := len(iface.Namespaces) - 1; i >= 0; i-- {
+		reversedNamespaces = append(reversedNamespaces, iface.Namespaces[i])
 	}
-	model.Namespaces = reversedNamespaces
+	iface.Namespaces = reversedNamespaces
 
 	return nil
 }
