@@ -1,0 +1,35 @@
+package main
+
+type Model struct {
+	Namespaces []string
+	Interfaces map[string]iface
+}
+
+type iface struct {
+	Name    string
+	Methods map[string]method
+}
+
+type method struct {
+	Name      string
+	Arguments []argument
+}
+
+type argument struct {
+	Name string
+	Type string
+}
+
+func NewModel() Model {
+	return Model{
+		Namespaces: []string{},
+		Interfaces: make(map[string]iface),
+	}
+}
+
+func NewInterface() iface {
+	return iface{
+		Name:    "",
+		Methods: make(map[string]method),
+	}
+}
