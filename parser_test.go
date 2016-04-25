@@ -27,40 +27,7 @@ virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
 `
 
 func TestParserWithSimpleInterface(t *testing.T) {
-	var parseOptions uint16 = CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
-
-	file, err := ioutil.TempFile("", "cpp_codegen_test_parser")
-	defer os.Remove(file.Name())
-	if err != nil {
-		t.Fatalf("Unable to create temporary file")
-	}
-	defer os.Remove(file.Name())
-
-	_, err4 := file.Write([]byte(testInterface))
-	if err4 != nil {
-		t.Fatalf("Unable to write to file %s", file.Name())
-	}
-
-	err3 := file.Close()
-	if err3 != nil {
-		t.Fatalf("Unable to close file %s", file.Name())
-	}
-
-	// TODO @jupp: this is copy + pasted from main.go, extract this and hide behind an interface
-	idx := clang.NewIndex(0, 0)
-	defer idx.Dispose()
-
-	tu := idx.ParseTranslationUnit(file.Name(), []string{"-x", "c++"}, nil, parseOptions)
-	defer tu.Dispose()
-
-	cursor := tu.TranslationUnitCursor()
-
-	model := NewModel()
-	cursor.Visit(func(cursor, parent clang.Cursor) clang.ChildVisitResult {
-		return visitAST(cursor, parent, &model)
-	})
-
-	fmt.Printf("parsed model %v", model)
+	model := createTestModel(t)
 
 	classModel, ok := model.Interfaces["TestInterface"]
 	if !ok {
@@ -112,4 +79,43 @@ func TestParserWithSimpleInterface(t *testing.T) {
 	if !reflect.DeepEqual(secondClassModel.Namespaces, classModel.Namespaces) {
 		t.Fatalf("namespace models should be equal: %v == %v", secondClassModel.Namespaces, classModel.Namespaces)
 	}
+}
+
+func createTestModel(t *testing.T) Model {
+	var parseOptions uint16 = CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
+
+	file, err := ioutil.TempFile("", "cpp_codegen_test_parser")
+	defer os.Remove(file.Name())
+	if err != nil {
+		t.Fatalf("Unable to create temporary file")
+	}
+	defer os.Remove(file.Name())
+
+	_, err4 := file.Write([]byte(testInterface))
+	if err4 != nil {
+		t.Fatalf("Unable to write to file %s", file.Name())
+	}
+
+	err3 := file.Close()
+	if err3 != nil {
+		t.Fatalf("Unable to close file %s", file.Name())
+	}
+
+	// TODO @jupp: this is copy + pasted from main.go, extract this and hide behind an interface
+	idx := clang.NewIndex(0, 0)
+	defer idx.Dispose()
+
+	tu := idx.ParseTranslationUnit(file.Name(), []string{"-x", "c++"}, nil, parseOptions)
+	defer tu.Dispose()
+
+	cursor := tu.TranslationUnitCursor()
+
+	model := NewModel()
+	cursor.Visit(func(cursor, parent clang.Cursor) clang.ChildVisitResult {
+		return visitAST(cursor, parent, &model)
+	})
+
+	fmt.Printf("parsed model %v", model)
+
+	return model
 }
