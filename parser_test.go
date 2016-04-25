@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/go-clang/v3.7/clang"
@@ -60,6 +61,14 @@ func TestParserWithSimpleInterface(t *testing.T) {
 	classModel, ok := model.Interfaces["TestInterface"]
 	if !ok {
 		t.Fatalf("TestInterface not found in model interfaces=%v", model.Interfaces)
+	}
+
+	if classModel.Name != "TestInterface" {
+		t.Fatalf("class name mismatch, expected TestInterface, got %s", classModel.Name)
+	}
+
+	if !reflect.DeepEqual(classModel.Namespaces, []string{"one", "two", "three"}) {
+		t.Fatalf("namespaces don't match, expected [one, two, three], got %v", classModel.Namespaces)
 	}
 
 	methodModel, ok := classModel.Methods["method"]

@@ -6,7 +6,6 @@ func addClassToModel(model *Model, cursor clang.Cursor) error {
 	name := cursor.Spelling()
 	iface := NewInterface()
 	iface.Name = name
-	model.Interfaces[name] = iface
 
 	namespaceCursor := cursor.LexicalParent()
 	for namespaceCursor.Kind() == clang.Cursor_Namespace {
@@ -19,6 +18,7 @@ func addClassToModel(model *Model, cursor clang.Cursor) error {
 		reversedNamespaces = append(reversedNamespaces, iface.Namespaces[i])
 	}
 	iface.Namespaces = reversedNamespaces
+	model.Interfaces[name] = iface
 
 	return nil
 }
