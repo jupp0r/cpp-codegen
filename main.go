@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	parseOptions := CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
+
 	var (
 		templateFile, interfaceFile, outFile string
 	)
@@ -20,7 +22,7 @@ func main() {
 	idx := clang.NewIndex(0, 0)
 	defer idx.Dispose()
 
-	tu := idx.ParseTranslationUnit(interfaceFile, flag.Args(), nil, 0)
+	tu := idx.ParseTranslationUnit(interfaceFile, flag.Args(), nil, uint16(parseOptions))
 	defer tu.Dispose()
 
 	fmt.Printf("tu: %s\n", tu.Spelling())
