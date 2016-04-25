@@ -11,7 +11,7 @@ namespace {{.}} {
 class Mock{{ .Name }} : public {{ .Name }}
 {
   {{ range .Methods }}
-  MOCK_METHOD{{ len .Arguments }}({{ .Name }}, void({{ joinTypes .Arguments }}));
+  MOCK_METHOD{{ len .Arguments }}({{ .Name }}, {{ .ReturnType }}({{ joinTypes .Arguments }}));
   {{ end }}
 };
 

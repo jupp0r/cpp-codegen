@@ -15,10 +15,12 @@ namespace one { namespace two { namespace three {
 class TestInterface {
 virtual ~TestInterface() = default;
 virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
+virtual int method2() = 0;
 };
 class TestInterface2 {
 virtual ~TestInterface() = default;
 virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
+virtual int method2() = 0;
 };
 }}}
 `
@@ -89,11 +91,25 @@ func TestMethodArgumentParsing(t *testing.T) {
 	}
 }
 
+func TestReturnType(t *testing.T) {
+	model := createTestModel(t)
+	classModel := model.Interfaces["TestInterface"]
+
+	ret1 := classModel.Methods["method"].ReturnType
+	if ret1 != "void" {
+		t.Fatalf("wrong return type, expected void, got %s", ret1)
+	}
+
+	ret2 := classModel.Methods["method2"].ReturnType
+	if ret2 != "int" {
+		t.Fatalf("wrong return type, expected void, got %s", ret2)
+	}
+}
+
 func TestSecondClassIsParsed(t *testing.T) {
 	model := createTestModel(t)
 
 	classModel := model.Interfaces["TestInterface"]
-
 	secondClassModel := model.Interfaces["TestInterface2"]
 
 	if !reflect.DeepEqual(secondClassModel.Methods, classModel.Methods) {

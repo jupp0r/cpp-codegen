@@ -54,7 +54,7 @@ func addClassToModel(model *Model, cursor clang.Cursor) error {
 func addMethodToModel(model *Model, cursor clang.Cursor) error {
 	className := cursor.LexicalParent().Spelling()
 
-	method := method{Name: cursor.Spelling(), Arguments: []argument{}}
+	method := method{Name: cursor.Spelling(), ReturnType: cursor.ResultType().Spelling(), Arguments: []argument{}}
 
 	for i := int16(0); i < cursor.NumArguments(); i++ {
 		argumentCursor := cursor.Argument(uint16(i))

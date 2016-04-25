@@ -11,8 +11,9 @@ type iface struct {
 }
 
 type method struct {
-	Name      string
-	Arguments []argument
+	Name       string
+	ReturnType string
+	Arguments  []argument
 }
 
 type argument struct {
