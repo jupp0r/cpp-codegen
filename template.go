@@ -3,23 +3,15 @@ package main
 import (
 	"io"
 	"path/filepath"
-	"strings"
 	"text/template"
 )
 
 // RenderModel uses the provided model and the given template file
 // to perform code generation.
 func RenderModel(model *Model, templateFile string, w io.Writer) error {
-
 	helperFuncs := template.FuncMap{
-		"join": func(items []string) string { return strings.Join(items, ",") },
-		"joinTypes": func(items []argument) string {
-			types := []string{}
-			for _, argument := range items {
-				types = append(types, argument.Type)
-			}
-			return strings.Join(types, ",")
-		},
+		"join":      join,
+		"joinTypes": joinTypes,
 	}
 
 	tname := filepath.Base(templateFile)
