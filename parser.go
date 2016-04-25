@@ -27,6 +27,17 @@ func addMethodToModel(model *Model, cursor clang.Cursor) error {
 	className := cursor.LexicalParent().Spelling()
 
 	method := method{Name: cursor.Spelling(), Arguments: []argument{}}
+
+	for i := int16(0); i < cursor.NumArguments(); i++ {
+		argumentCursor := cursor.Argument(uint16(i))
+		method.Arguments = append(
+			method.Arguments,
+			argument{
+				Name: argumentCursor.Spelling(),
+				Type: argumentCursor.Type().Spelling(),
+			})
+	}
+
 	model.Interfaces[className].Methods[method.Name] = method
 	return nil
 }

@@ -11,10 +11,12 @@ import (
 
 const testInterface = `
 #pragma once
+#include <string>
+#include <vector>
 namespace one { namespace two { namespace three {
 class TestInterface {
 virtual ~TestInterface() = default;
-virtual void method(int, string, const& TemplatedType<int>) = 0;
+virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
 };
 }}}
 `
@@ -43,32 +45,49 @@ func TestParserWithSimpleInterface(t *testing.T) {
 	idx := clang.NewIndex(0, 0)
 	defer idx.Dispose()
 
-	fmt.Printf("opened %s\n", file.Name())
-
 	tu := idx.ParseTranslationUnit(file.Name(), []string{"-x", "c++"}, nil, parseOptions)
 	defer tu.Dispose()
 
 	cursor := tu.TranslationUnitCursor()
-	fmt.Printf("tu: %s\n", tu.Spelling())
-
-	fmt.Printf("cursor-isnull: %v\n", cursor.IsNull())
-	fmt.Printf("cursor: %s\n", cursor.Spelling())
-	fmt.Printf("cursor-kind: %s\n", cursor.Kind().Spelling())
-
-	fmt.Printf("tu-fname: %s\n", tu.File(file.Name()).Name())
 
 	model := NewModel()
 	cursor.Visit(func(cursor, parent clang.Cursor) clang.ChildVisitResult {
 		return visitAST(cursor, parent, &model)
 	})
 
+	fmt.Printf("parsed model %v", model)
+
 	classModel, ok := model.Interfaces["TestInterface"]
 	if !ok {
 		t.Fatalf("TestInterface not found in model interfaces=%v", model.Interfaces)
 	}
 
-	_, ok2 := classModel.Methods["method"]
-	if !ok2 {
+	methodModel, ok := classModel.Methods["method"]
+	if !ok {
 		t.Fatalf("method not found in model")
+	}
+
+	if methodModel.Arguments[0].Name != "foo" {
+		t.Fatalf("expected foo for argument name 0, got %s", methodModel.Arguments[0].Name)
+	}
+
+	if methodModel.Arguments[0].Type != "int" {
+		t.Fatalf("wrong type for argument, expected int, got %s", methodModel.Arguments[0].Type)
+	}
+
+	if methodModel.Arguments[1].Name != "" {
+		t.Fatalf("expected no name for %s argument", methodModel.Arguments[1].Name)
+	}
+
+	if methodModel.Arguments[1].Type != "std::string" {
+		t.Fatalf("wrong type for argument 1, expected std::string, got %s", methodModel.Arguments[1].Type)
+	}
+
+	if methodModel.Arguments[2].Name != "t" {
+		t.Fatalf("expected t for argument name 2, got %s", methodModel.Arguments[2].Name)
+	}
+
+	if methodModel.Arguments[2].Type != "const std::vector<int> &" {
+		t.Fatalf("wrong type for argument2 , expected 'const std::vector<int> &', got %s", methodModel.Arguments[2].Type)
 	}
 }
