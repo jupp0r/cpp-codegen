@@ -54,14 +54,18 @@ func TestNamespaceParsing(t *testing.T) {
 	}
 }
 
-func TestRest(t *testing.T) {
+func TestMethodExistsInModel(t *testing.T) {
 	model := createTestModel(t)
 	classModel := model.Interfaces["TestInterface"]
 
-	methodModel, ok := classModel.Methods["method"]
+	_, ok := classModel.Methods["method"]
 	if !ok {
 		t.Fatalf("method not found in model")
 	}
+}
+
+func TestMethodArgumentParsing(t *testing.T) {
+	methodModel := createMethodModel(t)
 
 	if methodModel.Arguments[0].Name != "foo" {
 		t.Fatalf("expected foo for argument name 0, got %s", methodModel.Arguments[0].Name)
@@ -86,8 +90,15 @@ func TestRest(t *testing.T) {
 	if methodModel.Arguments[2].Type != "const std::vector<int> &" {
 		t.Fatalf("wrong type for argument2 , expected 'const std::vector<int> &', got %s", methodModel.Arguments[2].Type)
 	}
+}
+
+func TestSecondClassIsParsed(t *testing.T) {
+	model := createTestModel(t)
+
+	classModel := model.Interfaces["TestInterface"]
 
 	secondClassModel := model.Interfaces["TestInterface2"]
+
 	if !reflect.DeepEqual(secondClassModel.Methods, classModel.Methods) {
 		t.Fatalf("method models should be equal: %v == %v", secondClassModel.Methods, classModel.Methods)
 	}
@@ -134,4 +145,16 @@ func createTestModel(t *testing.T) Model {
 	fmt.Printf("parsed model %v", model)
 
 	return model
+}
+
+func createMethodModel(t *testing.T) method {
+	model := createTestModel(t)
+	classModel := model.Interfaces["TestInterface"]
+
+	methodModel, ok := classModel.Methods["method"]
+	if !ok {
+		t.Fatalf("method not found in model")
+	}
+
+	return methodModel
 }
