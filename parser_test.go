@@ -19,6 +19,10 @@ class TestInterface {
 virtual ~TestInterface() = default;
 virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
 };
+class TestInterface2 {
+virtual ~TestInterface() = default;
+virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
+};
 }}}
 `
 
@@ -98,5 +102,14 @@ func TestParserWithSimpleInterface(t *testing.T) {
 
 	if methodModel.Arguments[2].Type != "const std::vector<int> &" {
 		t.Fatalf("wrong type for argument2 , expected 'const std::vector<int> &', got %s", methodModel.Arguments[2].Type)
+	}
+
+	secondClassModel := model.Interfaces["TestInterface2"]
+	if !reflect.DeepEqual(secondClassModel.Methods, classModel.Methods) {
+		t.Fatalf("method models should be equal: %v == %v", secondClassModel.Methods, classModel.Methods)
+	}
+
+	if !reflect.DeepEqual(secondClassModel.Namespaces, classModel.Namespaces) {
+		t.Fatalf("namespace models should be equal: %v == %v", secondClassModel.Namespaces, classModel.Namespaces)
 	}
 }
