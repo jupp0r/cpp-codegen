@@ -26,21 +26,37 @@ virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
 }}}
 `
 
-func TestParserWithSimpleInterface(t *testing.T) {
+func TestClassParsing(t *testing.T) {
 	model := createTestModel(t)
 
-	classModel, ok := model.Interfaces["TestInterface"]
+	_, ok := model.Interfaces["TestInterface"]
+
 	if !ok {
 		t.Fatalf("TestInterface not found in model interfaces=%v", model.Interfaces)
 	}
+}
+
+func TestClassNameParsing(t *testing.T) {
+	model := createTestModel(t)
+	classModel := model.Interfaces["TestInterface"]
 
 	if classModel.Name != "TestInterface" {
 		t.Fatalf("class name mismatch, expected TestInterface, got %s", classModel.Name)
 	}
+}
+
+func TestNamespaceParsing(t *testing.T) {
+	model := createTestModel(t)
+	classModel := model.Interfaces["TestInterface"]
 
 	if !reflect.DeepEqual(classModel.Namespaces, []string{"one", "two", "three"}) {
 		t.Fatalf("namespaces don't match, expected [one, two, three], got %v", classModel.Namespaces)
 	}
+}
+
+func TestRest(t *testing.T) {
+	model := createTestModel(t)
+	classModel := model.Interfaces["TestInterface"]
 
 	methodModel, ok := classModel.Methods["method"]
 	if !ok {
