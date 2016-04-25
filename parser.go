@@ -1,6 +1,34 @@
 package main
 
-import "github.com/go-clang/v3.7/clang"
+import (
+	"fmt"
+
+	"github.com/go-clang/v3.7/clang"
+)
+
+func ParseModel(file string, args []string, parseOptions uint16) Model {
+	idx := clang.NewIndex(0, 0)
+	defer idx.Dispose()
+
+	tu := idx.ParseTranslationUnit(file, args, nil, uint16(parseOptions))
+	defer tu.Dispose()
+
+	fmt.Printf("tu: %s\n", tu.Spelling())
+	cursor := tu.TranslationUnitCursor()
+	fmt.Printf("cursor-isnull: %v\n", cursor.IsNull())
+	fmt.Printf("cursor: %s\n", cursor.Spelling())
+	fmt.Printf("cursor-kind: %s\n", cursor.Kind().Spelling())
+
+	fmt.Printf("tu-fname: %s\n", tu.File(file).Name())
+
+	model := NewModel()
+
+	cursor.Visit(func(cursor, parent clang.Cursor) clang.ChildVisitResult {
+		return visitAST(cursor, parent, &model)
+	})
+
+	return model
+}
 
 func addClassToModel(model *Model, cursor clang.Cursor) error {
 	name := cursor.Spelling()

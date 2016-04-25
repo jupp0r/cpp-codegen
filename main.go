@@ -1,14 +1,9 @@
 package main
 
-import (
-	"flag"
-	"fmt"
-
-	"github.com/go-clang/v3.7/clang"
-)
+import "flag"
 
 func main() {
-	parseOptions := CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
+	var parseOptions uint16 = CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
 
 	var (
 		templateFile, interfaceFile, outFile string
@@ -19,27 +14,5 @@ func main() {
 
 	flag.Parse()
 
-	idx := clang.NewIndex(0, 0)
-	defer idx.Dispose()
-
-	tu := idx.ParseTranslationUnit(interfaceFile, flag.Args(), nil, uint16(parseOptions))
-	defer tu.Dispose()
-
-	fmt.Printf("tu: %s\n", tu.Spelling())
-	cursor := tu.TranslationUnitCursor()
-	fmt.Printf("cursor-isnull: %v\n", cursor.IsNull())
-	fmt.Printf("cursor: %s\n", cursor.Spelling())
-	fmt.Printf("cursor-kind: %s\n", cursor.Kind().Spelling())
-
-	fmt.Printf("tu-fname: %s\n", tu.File(interfaceFile).Name())
-
-	model := NewModel()
-
-	cursor.Visit(func(cursor, parent clang.Cursor) clang.ChildVisitResult {
-		return visitAST(cursor, parent, &model)
-	})
-
-	fmt.Printf(":: model: %v\n", model)
-
-	fmt.Printf(":: bye.\n")
+	ParseModel(interfaceFile, flag.Args(), parseOptions)
 }
