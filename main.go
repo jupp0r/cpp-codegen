@@ -1,6 +1,9 @@
 package main
 
-import "flag"
+import (
+	"flag"
+	"os"
+)
 
 func main() {
 	var parseOptions uint16 = CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
@@ -14,5 +17,16 @@ func main() {
 
 	flag.Parse()
 
-	ParseModel(interfaceFile, flag.Args(), parseOptions)
+	model := ParseModel(interfaceFile, flag.Args(), parseOptions)
+
+	out, err := os.Create(outFile)
+	if err != nil {
+		panic(err)
+	}
+	defer out.Close()
+
+	err2 := RenderModel(&model, templateFile, out)
+	if err2 != nil {
+		panic(err2)
+	}
 }

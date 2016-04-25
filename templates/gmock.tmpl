@@ -1,0 +1,21 @@
+// this file is auto-generated, changing it is pointless
+#pragma once
+
+#include <gmock/gmock.h>
+
+{{ range .Interfaces }}
+{{ range .Namespaces }}
+namespace {{.}} {
+{{ end }}
+
+class Mock{{ .Name }} : public {{ .Name }}
+{
+  {{ range .Methods }}
+  MOCK_METHOD{{ len .Arguments }}({{ .Name }}, void({{ joinTypes .Arguments }}));
+  {{ end }}
+};
+
+{{ range .Namespaces }}
+}
+{{ end }}
+{{ end }}
