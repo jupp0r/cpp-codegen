@@ -1,5 +1,6 @@
 package main
 
+// Model exposes a model of the parsed AST to be included in views
 type Model struct {
 	Interfaces map[string]iface
 }
@@ -21,13 +22,14 @@ type argument struct {
 	Type string
 }
 
+// NewModel constructs an empty model
 func NewModel() Model {
 	return Model{
 		Interfaces: make(map[string]iface),
 	}
 }
 
-func NewInterface() iface {
+func newInterface() iface {
 	return iface{
 		Name:       "",
 		Namespaces: []string{},
