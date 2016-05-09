@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	var parseOptions uint16 = CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing
+	var parseOptions uint16 = cxTranslationUnitIncomplete | cxTranslationUnitSkipFunctionBodies | cxTranslationUnitKeepGoing
 
 	var (
 		templateFile, interfaceFile, outFile string

@@ -6,11 +6,13 @@ import (
 	"github.com/go-clang/v3.7/clang"
 )
 
+// ParseModel reads the contents of a C++ interface header and produces
+// a model object from the parsed AST.
 func ParseModel(file string, args []string, parseOptions uint16) Model {
 	idx := clang.NewIndex(0, 0)
 	defer idx.Dispose()
 
-	tu := idx.ParseTranslationUnit(file, args, nil, uint16(parseOptions))
+	tu := idx.ParseTranslationUnit(file, args, nil, parseOptions)
 	defer tu.Dispose()
 
 	fmt.Printf("tu: %s\n", tu.Spelling())
@@ -32,7 +34,7 @@ func ParseModel(file string, args []string, parseOptions uint16) Model {
 
 func addClassToModel(model *Model, cursor clang.Cursor) error {
 	name := cursor.Spelling()
-	iface := NewInterface()
+	iface := newInterface()
 	iface.Name = name
 
 	namespaceCursor := cursor.LexicalParent()
