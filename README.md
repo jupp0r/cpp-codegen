@@ -1,4 +1,5 @@
-# cpp codegen
+# cpp codegen [![Build Status](https://travis-ci.org/jupp0r/cpp-codegen.svg?branch=master)](https://travis-ci.org/jupp0r/cpp-codegen) [![Windows Build](https://ci.appveyor.com/api/projects/status/921lubl0gg04og10?svg=true)](https://ci.appveyor.com/project/jupp0r/cpp-codegen)
+
 A Model View Controller for Source-To-Source
 transformations. This tool reads C++ interfaces via libclang, and
 transforms them according to specific recipes. One use case is the
