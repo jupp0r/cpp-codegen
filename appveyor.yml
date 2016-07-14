@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-LC:\\LLVM\\bin -LC:\\LLVM\\lib"
+  CGO_LDFLAGS: "-LC:/LLVM/bin -LC:/LLVM/lib"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -21,12 +21,13 @@ install:
   - mingw-14.0.exe -oC:\mingw-cpp-codegen -y
   - c:\mingw-cpp-codegen\mingw\set_distro_paths.bat
   - appveyor DownloadFile http://llvm.org/releases/3.7.0/LLVM-3.7.0-win64.exe
-  - powershell -NoProfile -ExecutionPolicy bypass -Command Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
-  - powershell -NoProfile -ExecutionPolicy bypass -Command Start-Process "LLVM-3.7.0-win64.exe" -ArgumentList "/S","/D=C:\LLVM" -Wait
+  - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
+  - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
   - go version
   - go env
 
 build_script:
   - go get -v -x ./...
   - go build -v -x ./...
-  - go test -v -x ./...
+  - copy C:\LLVM\bin\libclang.dll .
+  - go test ./...
