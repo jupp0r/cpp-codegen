@@ -9,17 +9,24 @@ import (
 
 const testInterface = `
 #pragma once
-#include <string>
-#include <vector>
+
 namespace one { namespace two { namespace three {
+
+namespace some {
+template <typename T>
+struct Foo {};
+
+class Bar;
+}
+
 class TestInterface {
 virtual ~TestInterface() = default;
-virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
+virtual void method(int foo, some::Bar, const some::Foo<int>& t) = 0;
 virtual int method2() = 0;
 };
 class TestInterface2 {
 virtual ~TestInterface() = default;
-virtual void method(int foo, std::string, const std::vector<int>& t) = 0;
+virtual void method(int foo, some::Bar, const some::Foo<int>& t) = 0;
 virtual int method2() = 0;
 };
 }}}
@@ -78,16 +85,16 @@ func TestMethodArgumentParsing(t *testing.T) {
 		t.Fatalf("expected no name for %s argument", methodModel.Arguments[1].Name)
 	}
 
-	if methodModel.Arguments[1].Type != "std::string" {
-		t.Fatalf("wrong type for argument 1, expected std::string, got %s", methodModel.Arguments[1].Type)
+	if methodModel.Arguments[1].Type != "some::Bar" {
+		t.Fatalf("wrong type for argument 1, expected some::Bar, got %s", methodModel.Arguments[1].Type)
 	}
 
 	if methodModel.Arguments[2].Name != "t" {
 		t.Fatalf("expected t for argument name 2, got %s", methodModel.Arguments[2].Name)
 	}
 
-	if methodModel.Arguments[2].Type != "const std::vector<int> &" {
-		t.Fatalf("wrong type for argument2 , expected 'const std::vector<int> &', got %s", methodModel.Arguments[2].Type)
+	if methodModel.Arguments[2].Type != "const some::Foo<int> &" {
+		t.Fatalf("wrong type for argument2 , expected 'const some::Foo<int> &', got %s", methodModel.Arguments[2].Type)
 	}
 }
 
