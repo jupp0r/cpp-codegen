@@ -24,7 +24,7 @@ install:
   - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
   - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
   - copy C:\LLVM\lib\libclang.lib c:\gopath\src\cpp-codegen\clang.lib
-  - del C:\LLMV\bin\libclang.dll
+  - del C:\LLVM\bin\libclang.dll
   - go version
   - go env
 
