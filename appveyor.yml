@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-LC:/LLVM/bin -LC:/LLVM/lib -static"
+  CGO_LDFLAGS: "-L. -static"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -25,6 +25,7 @@ install:
   - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
   - go version
   - go env
+  - copy C:\LLVM\lib\libclang.lib clang.lib
 
 build_script:
   - go get -v -x ./...
