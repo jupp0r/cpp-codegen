@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static"
+  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static -lclang"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
