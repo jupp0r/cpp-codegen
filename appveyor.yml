@@ -23,7 +23,7 @@ install:
   - appveyor DownloadFile http://llvm.org/releases/3.7.0/LLVM-3.7.0-win64.exe
   - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
   - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
-  - copy C:\LLVM\lib\libclang.lib c:\gopath\src\cpp-codegen\clang.lib
+  - copy C:\LLVM\lib\libclang.lib c:\LLVM\lib\clang.lib
   - del C:\LLVM\bin\libclang.dll
   - go version
   - go env
