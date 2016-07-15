@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static -lclang"
+  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -29,5 +29,5 @@ install:
 
 build_script:
   - go get --ldflags "-extldflags \"-static\"" -v -x ./...
-  - go build --ldflags "-extldflags \"-static\""  -v -x ./...
-  - go test --ldflags "-extldflags \"-static\"" ./...
+  - go build --ldflags "-extldflags \"-static -lclang\""  -v -x ./...
+  - go test --ldflags "-extldflags \"-static -lclang\"" ./...
