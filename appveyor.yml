@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static"
+  CGO_LDFLAGS: "-Lc:/gopath/src/cpp-codegen -static -Wl,-Bstatic -lclang"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -23,14 +23,14 @@ install:
   - appveyor DownloadFile http://llvm.org/releases/3.7.0/LLVM-3.7.0-win64.exe
   - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
   - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
-  - copy C:\LLVM\lib\libclang.lib c:\gopath\src\cpp-codegen\clang.a
+  - copy C:\LLVM\lib\libclang.lib c:\gopath\src\cpp-codegen\clang.lib
   - go version
   - go env
 
 build_script:
   - go get --ldflags "-extldflags \"-static\" -Wl,-Bstatic -lclang" -v -x ./...
   - go build --ldflags "-extldflags \"-static -Wl,-Bstatic -lclang\""  -v -x ./...
-#  - go test --ldflags "-extldflags \"-static -Wl,-Bstatic -lclang\"" -v -x ./...
+  - go test --ldflags "-extldflags \"-static -Wl,-Bstatic -lclang\"" -v -x ./...
 
 artifacts:
   - path: cpp-codegen.exe
