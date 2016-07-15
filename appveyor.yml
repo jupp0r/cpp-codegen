@@ -21,6 +21,7 @@ install:
   - mingw-14.0.exe -oC:\mingw-cpp-codegen -y
   - c:\mingw-cpp-codegen\mingw\set_distro_paths.bat
   - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
+  - mkdir c:\projects
   - cd c:\projects
   - git clone -b release_37 --depth 1 http://llvm.org/git/llvm.git
   - cd c:\projects\llvm\tools
