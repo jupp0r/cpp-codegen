@@ -3,7 +3,7 @@ platform: x64
 environment:
   GOPATH: c:\gopath
   GOVERSION: 1.5
-  CGO_LDFLAGS: "-static --start-group -Lc:/gopath/src/cpp-codegen -Wl,-Bstatic -lclang --end-group"
+  CGO_LDFLAGS: "-static -LC:/LLVM/lib -Wl,-Bstatic -lclang"
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -29,9 +29,9 @@ install:
   - go env
 
 build_script:
-  - go get --ldflags "-extldflags \"-static --start-group -LC:/LLVM/lib -Wl,-Bstatic -lclang --end-group\"" -v -x ./...
-  - go build --ldflags "-extldflags \"-static --start-group -LC:/LLVM/lib -Wl,-Bstatic -lclang --end-group\""  -v -x ./...
-  - go test --ldflags "-extldflags \"-static --start-group -LC:/LLVM/lib -Wl,-Bstatic -lclang --end-group\"" -v -x ./...
+  - go get --ldflags "-extldflags \"-static -LC:/LLVM/lib -Wl,-Bstatic -lclang" -v -x ./...
+  - go build --ldflags "-extldflags \"-static -LC:/LLVM/lib -Wl,-Bstatic -lclang\""  -v -x ./...
+  - go test --ldflags "-extldflags \"-static -LC:/LLVM/lib -Wl,-Bstatic -lclang\"" -v -x ./...
 
 artifacts:
   - path: cpp-codegen.exe
