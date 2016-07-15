@@ -20,9 +20,16 @@ install:
   - appveyor DownloadFile https://nuwen.net/files/mingw/history/mingw-14.0.exe
   - mingw-14.0.exe -oC:\mingw-cpp-codegen -y
   - c:\mingw-cpp-codegen\mingw\set_distro_paths.bat
-  - appveyor DownloadFile http://llvm.org/releases/3.7.0/LLVM-3.7.0-win64.exe
   - powershell Start-Process "\"C:\Program Files\\LLVM\Uninstall.exe\"" -ArgumentList "/S" -Wait
-  - LLVM-3.7.0-win64.exe /S /D=C:\LLVM
+  - cd c:\projects
+  - git clone -b release_37 --depth 1 http://llvm.org/git/llvm.git
+  - cd c:\projects\llvm\tools
+  - git clone -b release_37 --depth 1 http://llvm.org/git/clang.git
+  - cd c:\projects\llvm
+  - mkdir _build
+  - cd _build
+  - cmake .. -G "Visual Studio 14 2015 Win64" -DCMAKE_RELEASE_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:\LLVM -DLLVM_TARGETS_TO_BUILD=X86 -DBUILD_SHARED_LIBS=Off
+  - cmake --build . --target install --config Release
   - copy C:\LLVM\lib\libclang.lib c:\LLVM\lib\clang.lib
   - del C:\LLVM\bin\libclang.dll
   - go version
